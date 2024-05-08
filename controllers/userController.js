@@ -33,7 +33,7 @@ const getAllUser = async(req, res) => {
 
 const pauseTools = async(req, res) => {
     try {
-        const { user_id } = req.params;
+        const { user_id } = req.body; // Change from req.params to req.body since the user_id is sent in the request body
         const user = await User.findOneAndUpdate({ user_id }, { status: false }, { new: true });
         res.status(200).json({ user });
     } catch (error) {
@@ -41,6 +41,7 @@ const pauseTools = async(req, res) => {
         res.status(500).json({ error: error.message });
     }
 }
+
 
 const resumeTools = async(req, res) => {
     try {
