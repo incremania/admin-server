@@ -8,6 +8,7 @@ const {
     updateMachineName
 } = require('../controllers/userController')
 
+
 router
 .post('/register', createUser)
 .get('/users', getAllUser)

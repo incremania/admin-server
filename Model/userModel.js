@@ -5,6 +5,9 @@ const userSchema = new Schema({
         type: String,
         required: true,
     },
+    unmodified_user: {
+        type: String
+    },
     token: {
         type: String,
         required: true

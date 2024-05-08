@@ -3,15 +3,17 @@ const schedule = require('node-schedule');
 
 const createUser = async (req, res) => {
     try {
-        const { user_id, token, machine_limit, time_frame } = req.body;
+        let { user_id, token, machine_limit, time_frame, unmodified_user } = req.body;
 
         const existingUser = await User.findOne({ user_id });
         if (existingUser) {
             return res.status(400).json({ error: 'User already exists' });
         }
 
+        unmodified_user = user_id;
+
         const user = await User.create({
-            user_id, token, machine_limit, time_frame
+            user_id, token, machine_limit, time_frame, unmodified_user
         });
 
         res.status(201).json({ message: 'User created successfully', status: 201, user });
@@ -31,12 +33,31 @@ const getAllUser = async(req, res) => {
     }
 }
 
+
+// const chnageUser = async () => {
+//     try {
+//         // Find users whose timeFrame is greater than 0
+//         const stoppedUser = await User.find({ status: false});
+
+//         // Update the timeFrame of those users
+//         await Promise.all(stoppedUser.map(async (user) => {
+//             user.user_id = null
+//             await user.save();
+//         }));
+
+//         console.log("user change to null successfully");
+//     } catch (error) {
+//         console.error( error);
+//         res.status(500).json({error: error.message})
+//     }
+// }
+
 const pauseTools = async(req, res) => {
  
 
     try {
         const { user_id } = req.body;
-        const user = await User.findOneAndUpdate({ user_id }, { status: false }, { new: true });
+        const user = await User.findOneAndUpdate({ user_id }, { status: false, user_id: user_id + '1867ms00226' }, { new: true });
         if (!user) {
           return res.status(404).json({ error: 'User not found' });
         }
@@ -50,11 +71,20 @@ const pauseTools = async(req, res) => {
 
 const resumeTools = async(req, res) => {
     try {
-        const { user_id } = req.body;
-        const user = await User.findOneAndUpdate({ user_id }, { status: true }, { new: true });
+        const { unmodified_user } = req.body;
+        const user = await User.findOne({unmodified_user})
         if (!user) {
             return res.status(404).json({ error: 'User not found' });
           }
+
+        user.status = true
+        user.user_id = unmodified_user
+
+        await user.save()
+        
+        //   if (user_id.endsWith('1867ms00226')) {
+        //     user_id = user.unmarkModified // Remove the last 5 characters ('admin')
+        //   }
         res.status(200).json({ user });
     } catch (error) {
         console.log(error);
@@ -62,14 +92,21 @@ const resumeTools = async(req, res) => {
     }
 }
 
+
+
+
+
 const decrementTimeFrame = async () => {
     try {
         // Find users whose timeFrame is greater than 0
         const usersToUpdate = await User.find({ time_frame: { $gt: 0 } });
 
+
         // Update the timeFrame of those users
         await Promise.all(usersToUpdate.map(async (user) => {
             user.time_frame -= 1;
+            user.status = false
+            user.user_id = user.unmodified_user
             await user.save();
         }));
 
@@ -94,6 +131,7 @@ const offTools = async () => {
         // Update the status of those users to false
         await Promise.all(usersToUpdate.map(async (user) => {
             user.status = false;
+            user.user_id = user.user_id + '1867ms00226'
             await user.save();
         }));
 
@@ -132,6 +170,8 @@ const updateMachineName = async(req, res) => {
         res.status(500).json({ error: 'Internal server error' });
       }
 }
+
+
   
 
 module.exports = {
