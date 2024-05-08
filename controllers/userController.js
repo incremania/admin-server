@@ -32,14 +32,19 @@ const getAllUser = async(req, res) => {
 }
 
 const pauseTools = async(req, res) => {
+ 
+
     try {
-        const { user_id } = req.body; // Change from req.params to req.body since the user_id is sent in the request body
+        const { user_id } = req.body;
         const user = await User.findOneAndUpdate({ user_id }, { status: false }, { new: true });
-        res.status(200).json({ user });
-    } catch (error) {
-        console.log(error);
+        if (!user) {
+          return res.status(404).json({ error: 'User not found' });
+        }
+        res.status(200).json({ message: 'User paused successfully', user });
+      } catch (error) {
+        console.error('Error pausing user:', error);
         res.status(500).json({ error: error.message });
-    }
+      }
 }
 
 
