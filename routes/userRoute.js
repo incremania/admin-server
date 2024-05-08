@@ -11,7 +11,7 @@ router
 .post('/register', createUser)
 .get('/users', getAllUser)
 .patch('/pause', pauseTools)
-.patch('/resume/:user_id', resumeTools)
+.patch('/resume', resumeTools)
 
 
 
