@@ -10,8 +10,8 @@ const {
 router
 .post('/register', createUser)
 .get('/users', getAllUser)
-.patch('/pause/:user_name', pauseTools)
-.patch('/resume/:user_name', resumeTools)
+.patch('/pause/:user_id', pauseTools)
+.patch('/resume/:user_id', resumeTools)
 
 
 

@@ -3,15 +3,15 @@ const schedule = require('node-schedule');
 
 const createUser = async (req, res) => {
     try {
-        const { user_name, token, machine_limit, time_frame } = req.body;
+        const { user_id, token, machine_limit, time_frame } = req.body;
 
-        const existingUser = await User.findOne({ user_name });
+        const existingUser = await User.findOne({ user_id });
         if (existingUser) {
             return res.status(400).json({ error: 'User already exists' });
         }
 
         const user = await User.create({
-            user_name, token, machine_limit, time_frame
+            user_id, token, machine_limit, time_frame
         });
 
         res.status(201).json({ message: 'User created successfully', status: 201, user });
@@ -33,8 +33,8 @@ const getAllUser = async(req, res) => {
 
 const pauseTools = async(req, res) => {
     try {
-        const { user_name } = req.params;
-        const user = await User.findOneAndUpdate({ user_name }, { status: false }, { new: true });
+        const { user_id } = req.params;
+        const user = await User.findOneAndUpdate({ user_id }, { status: false }, { new: true });
         res.status(200).json({ user });
     } catch (error) {
         console.log(error);
@@ -44,8 +44,8 @@ const pauseTools = async(req, res) => {
 
 const resumeTools = async(req, res) => {
     try {
-        const { user_name } = req.params;
-        const user = await User.findOneAndUpdate({ user_name }, { status: true }, { new: true });
+        const { user_id } = req.params;
+        const user = await User.findOneAndUpdate({ user_id }, { status: true }, { new: true });
         res.status(200).json({ user });
     } catch (error) {
         console.log(error);
