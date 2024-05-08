@@ -4,12 +4,14 @@ const {
     createUser,
     getAllUser,
     pauseTools,
-    resumeTools
+    resumeTools,
+    updateMachineName
 } = require('../controllers/userController')
 
 router
 .post('/register', createUser)
 .get('/users', getAllUser)
+.post('/update-machine', updateMachineName)
 .patch('/pause', pauseTools)
 .patch('/resume', resumeTools)
 

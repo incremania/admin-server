@@ -106,9 +106,38 @@ const offTools = async () => {
 // Schedule the offTools function to run every day at midnight
 const offToolsJob = schedule.scheduleJob('0 0 * * *', offTools);
 
+
+const updateMachineName = async(req, res) => {
+    try {
+        const { user_id,  token, machine_name } = req.body;
+    
+        // Find the user by user_id
+        let user = await User.findOne({ user_id });
+    
+        if (!user) {
+          // If the user does not exist, return an error message
+          return res.status(404).json({ error: 'User not registered' });
+        }
+    
+        // Update the user's record to include the new machine_name
+        if (!user.machine_name.includes(machine_name)) {
+          user.machine_name.push(machine_name);
+          await user.save();
+        }
+    
+        // Return a success message along with the updated user record
+        res.status(200).json({ message: 'Machine name saved successfully', user });
+      } catch (error) {
+        console.error('Error saving machine name:', error);
+        res.status(500).json({ error: 'Internal server error' });
+      }
+}
+  
+
 module.exports = {
     createUser,
     getAllUser,
     pauseTools,
-    resumeTools
+    resumeTools,
+    updateMachineName
 };

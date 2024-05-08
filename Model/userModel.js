@@ -13,7 +13,7 @@ const userSchema = new Schema({
         type: Number,
         required: true
     },
-    machine_name: { // Corrected typo here
+    machine_name: { 
         type: String
     },
     time_frame: {
@@ -23,7 +23,10 @@ const userSchema = new Schema({
     status: {
         type: Boolean,
         default: true
-    }
+    },
+    machine_name: [{
+        type: String
+    }]
 }, 
 { timestamps: true }
 );
