@@ -27,7 +27,7 @@ const startDb = () => {
 
 
 
-const PORT = 6080 
+const PORT = 6080 || process.env.PORT
 
 app.listen(PORT, () => console.log(`listening on port ${PORT}`))
 
